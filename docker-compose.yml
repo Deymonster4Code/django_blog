@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13.3
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file: .env.dev
+    environment:
+      - POSTGRES_USER=blog
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=blog
+    
+  web:
+    build: .
+    command: python /usr/src/app/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/usr/src/app/
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file: .env.dev
+    environment:
+      - POSTGRES_USER=blog
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=blog
+volumes:
+  postgres_data:
